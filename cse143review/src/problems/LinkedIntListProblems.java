@@ -22,16 +22,27 @@ public class LinkedIntListProblems {
      * Reverses the 3 elements in the `LinkedIntList` (assume there are exactly 3 elements).
      */
     public static void reverse3(LinkedIntList list) {
-        // TODO replace this with your code
-        throw new UnsupportedOperationException("Not implemented yet.");
+        list.front.next.next.next = list.front;
+        list.front = list.front.next.next;
+        list.front.next.next.next = list.front.next;
+        list.front.next = list.front.next.next;
+        list.front.next.next.next = null;
     }
 
     /**
      * Moves the first element of the input list to the back of the list.
      */
     public static void firstToLast(LinkedIntList list) {
-        // TODO replace this with your code
-        throw new UnsupportedOperationException("Not implemented yet.");
+        if (list.front != null && list.front.next != null) {
+            ListNode temp = list.front;
+            list.front = list.front.next;
+            ListNode curr = list.front;
+            while (curr.next != null) {
+                curr = curr.next;
+            }
+            curr.next = temp;
+            temp.next = null;
+        }
     }
 
     /**
@@ -40,7 +51,21 @@ public class LinkedIntListProblems {
      */
     public static LinkedIntList concatenate(LinkedIntList a, LinkedIntList b) {
         // Hint: you'll need to use the 'new' keyword to construct new objects.
-        // TODO replace this with your code
-        throw new UnsupportedOperationException("Not implemented yet.");
+        LinkedIntList result = new LinkedIntList();
+        result.front = concatenate(a.front, b.front);
+        return result;
+    }
+
+    private static ListNode concatenate(ListNode a, ListNode b) {
+        if (a != null) {
+            ListNode curr = new ListNode(a.data);
+            if (a.next == null) {
+                curr.next = b;
+            } else {
+                curr.next = concatenate(a.next, b);
+            }
+            return curr;
+        }
+        return b;
     }
 }
