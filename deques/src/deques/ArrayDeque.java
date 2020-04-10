@@ -16,11 +16,12 @@ public class ArrayDeque<T> extends AbstractDeque<T> {
     }
 
     private static int increment(int i, int length) {
-        if (i == length - 1) {
-            return 0;
-        } else {
-            return i + 1;
-        }
+        // if (i == length - 1) {
+        //     return 0;
+        // } else {
+        //     return i + 1;
+        // }
+        return (i + 1) % length;
     }
 
     private static int decrement(int i, int length) {
