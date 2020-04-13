@@ -7,30 +7,27 @@ public class LinkedDeque<T> extends AbstractDeque<T> {
     Node<T> front;
     Node<T> back;
     // Feel free to add any additional fields you may need, though.
-    T frontData;
-    T backData;
+    T sentinel;
+
     public LinkedDeque() {
         size = 0;
-        frontData = (T)new Object();
-        backData = (T)new Object();
-        front = new Node(frontData);
-        back = new Node(backData);
+        sentinel = (T) new Object();
+        front = new Node<>(sentinel);
+        back = new Node<>(sentinel);
         front.next = back;
         back.prev = front;
     }
 
     public void addFirst(T item) {
         size += 1;
-        Node<T> frontNext = front.next;
-        Node<T> nextNode = new Node(item, front, frontNext);
+        Node<T> nextNode = new Node<>(item, front, front.next);
         front.next = nextNode;
         nextNode.next.prev = nextNode;
     }
 
     public void addLast(T item) {
         size += 1;
-        Node<T> backPrev = back.prev;
-        Node<T> prevNode = new Node(item, backPrev, back);
+        Node<T> prevNode = new Node<>(item, back.prev, back);
         back.prev = prevNode;
         prevNode.prev.next = prevNode;
     }
@@ -40,16 +37,11 @@ public class LinkedDeque<T> extends AbstractDeque<T> {
             return null;
         }
         size -= 1;
-        T remove = front.next.value;
-        if(size == 0){
-            front.next = back;
-            back.prev = front;
-        }else {
-            Node<T> nextNode = front.next.next;
-            front.next = nextNode;
-            nextNode.prev = front;
-        }
-        return remove;
+        Node<T> first = front.next;
+        Node<T> nextNode = front.next.next;
+        front.next = nextNode;
+        nextNode.prev = front;
+        return first.value;
     }
 
     public T removeLast() {
@@ -57,16 +49,11 @@ public class LinkedDeque<T> extends AbstractDeque<T> {
             return null;
         }
         size -= 1;
-        T remove = back.prev.value;
-        if(size == 0){
-            front.next = back;
-            back.prev = front;
-        }else {
-            Node<T> prevNode = back.prev.prev;
-            back.prev = prevNode;
-            prevNode.next = back;
-        }
-        return remove;
+        Node<T> last = back.prev;
+        Node<T> prevNode = back.prev.prev;
+        back.prev = prevNode;
+        prevNode.next = back;
+        return last.value;
     }
 
     public T get(int index) {
@@ -74,14 +61,14 @@ public class LinkedDeque<T> extends AbstractDeque<T> {
             return null;
         }
         Node<T> curr;
-        if(index > size / 2.0 - 1){
+        if (index > size / 2.0 - 1) {
             curr = back;
-            for(int i = size - 1; i >= index; i--){
+            for (int i = size - 1; i >= index; i--) {
                 curr = curr.prev;
             }
-        }else{
+        } else {
             curr = front;
-            for(int i = 0; i <= index; i++){
+            for (int i = 0; i <= index; i++) {
                 curr = curr.next;
             }
         }
