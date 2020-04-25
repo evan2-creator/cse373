@@ -97,9 +97,9 @@ public class ArrayMap<K, V> extends AbstractIterableMap<K, V> {
 
     @Override
     public V remove(Object key) {
-        int index = keyIndex(key);
         V oldValue = null;
         if (containsKey(key)) {
+            int index = keyIndex(key);
             oldValue = entries[index].getValue();
             entries[index] = entries[size - 1];
             size--;
@@ -115,12 +115,7 @@ public class ArrayMap<K, V> extends AbstractIterableMap<K, V> {
 
     @Override
     public boolean containsKey(Object key) {
-        for (int i = 0; i < size; i++) {
-            if (entries[i].getKey() == key || entries[i].getKey().equals(key)) {
-                return true;
-            }
-        }
-        return false;
+        return keyIndex(key) > -1;
     }
 
     @Override
