@@ -84,29 +84,27 @@ public class ArrayMap<K, V> extends AbstractIterableMap<K, V> {
     public V put(K key, V value) {
         if (containsKey(key)) {
             return entries[keyIndex(key)].setValue(value);
-        } else {
-            if (size == entries.length) {
-                SimpleEntry<K, V>[] oldEntries = entries;
-                entries = createArrayOfEntries(entries.length * 2);
-                System.arraycopy(oldEntries, 0, entries, 0, size);
-            }
-            entries[size] = new SimpleEntry<>(key, value);
-            size++;
-            return null;
         }
+        size++;
+        if (size > entries.length) {
+            SimpleEntry<K, V>[] oldEntries = entries;
+            entries = createArrayOfEntries(entries.length * 2);
+            System.arraycopy(oldEntries, 0, entries, 0, size - 1);
+        }
+        entries[size - 1] = new SimpleEntry<>(key, value);
+        return null;
     }
 
     @Override
     public V remove(Object key) {
         int index = keyIndex(key);
-        V result = null;
-        if (index != -1) {
-            result = entries[index].getValue();
+        V oldValue = null;
+        if (containsKey(key)) {
+            oldValue = entries[index].getValue();
             entries[index] = entries[size - 1];
-            entries[size - 1] = null;
             size--;
         }
-        return result;
+        return oldValue;
     }
 
     @Override
@@ -117,7 +115,12 @@ public class ArrayMap<K, V> extends AbstractIterableMap<K, V> {
 
     @Override
     public boolean containsKey(Object key) {
-        return keyIndex(key) != -1;
+        for (int i = 0; i < size; i++) {
+            if (entries[i].getKey() == key || entries[i].getKey().equals(key)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

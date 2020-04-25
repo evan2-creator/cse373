@@ -84,8 +84,12 @@ public class ChainedHashMap<K, V> extends AbstractIterableMap<K, V> {
 
     @Override
     public V get(Object key) {
-        int hashCode = setHashCode(key);
-        return chains[hashCode].get(key);
+        if (!containsKey(key)) {
+            return null;
+        } else {
+            int hashCode = setHashCode(key);
+            return chains[hashCode].get(key);
+        }
     }
 
     @Override
@@ -123,9 +127,9 @@ public class ChainedHashMap<K, V> extends AbstractIterableMap<K, V> {
 
     @Override
     public V remove(Object key) {
+        int hashCode = setHashCode(key);
         if (containsKey(key)) {
             chainSize--;
-            int hashCode = setHashCode(key);
             return chains[hashCode].remove(key);
         }
         return null;
