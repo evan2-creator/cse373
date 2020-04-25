@@ -85,7 +85,11 @@ public class ChainedHashMap<K, V> extends AbstractIterableMap<K, V> {
     @Override
     public V get(Object key) {
         int hashCode = setHashCode(key);
-        return chains[hashCode].get(key);
+        if (chains[hashCode] == null || !containsKey(key)) {
+            return null;
+        } else {
+            return chains[hashCode].get(key);
+        }
     }
 
     @Override
@@ -93,20 +97,19 @@ public class ChainedHashMap<K, V> extends AbstractIterableMap<K, V> {
         int hashCode = setHashCode(key);
         if (containsKey(key)) {
             return chains[hashCode].put(key, value);
-        } else {
-            if (chains[hashCode] == null) {
-                chains[hashCode] = new ArrayMap<>();
-            }
-
-            int oldSize = chains[hashCode].size();
-            chains[hashCode].put(key, value);
-            chainSize += (chains[hashCode].size() - oldSize);
-
-            if (1.0 * chainSize / chains.length > loadFactor) {
-                chains = resize();
-            }
-            return null;
         }
+
+        if (chains[hashCode] == null) {
+            chains[hashCode] = new ArrayMap<>();
+        }
+        int oldSize = chains[hashCode].size();
+        chains[hashCode].put(key, value);
+        chainSize += (chains[hashCode].size() - oldSize);
+
+        if (1.0 * chainSize / chains.length >= loadFactor) {
+            chains = resize();
+        }
+        return null;
     }
 
     private AbstractIterableMap<K, V>[] resize() {
@@ -123,12 +126,13 @@ public class ChainedHashMap<K, V> extends AbstractIterableMap<K, V> {
 
     @Override
     public V remove(Object key) {
-        if (containsKey(key)) {
+        int hashCode = setHashCode(key);
+        if (chains[hashCode] == null || !chains[hashCode].containsKey(key)) {
+            return null;
+        } else {
             chainSize--;
-            int hashCode = setHashCode(key);
             return chains[hashCode].remove(key);
         }
-        return null;
     }
 
     @Override
