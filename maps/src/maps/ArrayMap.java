@@ -82,8 +82,7 @@ public class ArrayMap<K, V> extends AbstractIterableMap<K, V> {
     @Override
     public V put(K key, V value) {
         if (containsKey(key)) {
-            //return entries[keyIndex(key)].setValue(value);
-            return entries[keyIndex(key)].getValue();
+            return entries[keyIndex(key)].setValue(value);
         }
         size++;
         if (size > entries.length) {
