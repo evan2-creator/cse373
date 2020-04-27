@@ -63,7 +63,7 @@ public class ArrayMap<K, V> extends AbstractIterableMap<K, V> {
 
     private int keyIndex(Object key) {
         for (int i = 0; i < size; i++) {
-            // if (entries[i].getKey() == key) {
+            //if (entries[i].getKey().equals(key)) {
             if (entries[i].getKey()==key || entries[i].getKey().equals(key)) {
                 return i;
             }
@@ -73,17 +73,17 @@ public class ArrayMap<K, V> extends AbstractIterableMap<K, V> {
 
     @Override
     public V get(Object key) {
-        if (!containsKey(key)) {
-            return null;
-        } else {
+        if (containsKey(key)) {
             return entries[keyIndex(key)].getValue();
         }
+        return null;
     }
 
     @Override
     public V put(K key, V value) {
         if (containsKey(key)) {
-            return entries[keyIndex(key)].setValue(value);
+            //return entries[keyIndex(key)].setValue(value);
+            return entries[keyIndex(key)].getValue();
         }
         size++;
         if (size > entries.length) {
