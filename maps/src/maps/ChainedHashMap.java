@@ -115,11 +115,11 @@ public class ChainedHashMap<K, V> extends AbstractIterableMap<K, V> {
     private AbstractIterableMap<K, V>[] resize() {
         AbstractIterableMap<K, V>[] newChains = createArrayOfChains(chains.length * 2);
         for (Map.Entry<K, V> pair : this) {
-            int newHashCode = Math.abs(pair.getKey().hashCode());
-            if (newChains[newHashCode % newChains.length] == null) {
-                newChains[newHashCode % newChains.length] = new ArrayMap<>();
+            int newHashCode = Math.abs(pair.getKey().hashCode()) % newChains.length;
+            if (newChains[newHashCode] == null) {
+                newChains[newHashCode] = new ArrayMap<>();
             }
-            newChains[newHashCode % newChains.length].put(pair.getKey(), pair.getValue());
+            newChains[newHashCode].put(pair.getKey(), pair.getValue());
         }
         return newChains;
     }
@@ -127,7 +127,7 @@ public class ChainedHashMap<K, V> extends AbstractIterableMap<K, V> {
     @Override
     public V remove(Object key) {
         int hashCode = setHashCode(key);
-        if (chains[hashCode] == null || !chains[hashCode].containsKey(key)) {
+        if (!chains[hashCode].containsKey(key)) {
             return null;
         } else {
             chainSize--;
