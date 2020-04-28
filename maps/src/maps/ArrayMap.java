@@ -3,6 +3,7 @@ package maps;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 /**
  * @see AbstractIterableMap
@@ -64,7 +65,7 @@ public class ArrayMap<K, V> extends AbstractIterableMap<K, V> {
     private int keyIndex(Object key) {
         for (int i = 0; i < size; i++) {
             //if (entries[i].getKey().equals(key)) {
-            if (entries[i].getKey()==key || entries[i].getKey().equals(key)) {
+            if (Objects.equals(entries[i].getKey(), key)) {
                 return i;
             }
         }
