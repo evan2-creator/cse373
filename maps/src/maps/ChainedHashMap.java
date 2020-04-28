@@ -3,6 +3,7 @@ package maps;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 /**
  * @see AbstractIterableMap
@@ -115,7 +116,7 @@ public class ChainedHashMap<K, V> extends AbstractIterableMap<K, V> {
     private AbstractIterableMap<K, V>[] resize() {
         AbstractIterableMap<K, V>[] newChains = createArrayOfChains(chains.length * 2);
         for (Map.Entry<K, V> pair : this) {
-            int newHashCode = Math.abs(pair.getKey().hashCode());
+            int newHashCode = Math.abs(Objects.hashCode(pair.getKey()));
             if (newChains[newHashCode % newChains.length] == null) {
                 newChains[newHashCode % newChains.length] = new ArrayMap<>();
             }
