@@ -93,7 +93,7 @@ public class ArrayHeapMinPQ<T extends Comparable<T>> implements ExtrinsicMinPQ<T
 
     @Override
     public int size() {
-        return size;
+        return itemsMap.size();
     }
 
     private int parentIndex(int childIndex) {
