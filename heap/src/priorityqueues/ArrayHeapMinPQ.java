@@ -12,11 +12,11 @@ public class ArrayHeapMinPQ<T extends Comparable<T>> implements ExtrinsicMinPQ<T
     List<PriorityNode<T>> items;
 
     private int size;
-    private HashMap<T, Integer> itemMap;
+    private HashMap<T, Integer> itemsMap;
 
     public ArrayHeapMinPQ() {
         items = new ArrayList<>();
-        itemMap = new HashMap<>();
+        itemsMap = new HashMap<>();
         size = 0;
     }
 
@@ -28,60 +28,62 @@ public class ArrayHeapMinPQ<T extends Comparable<T>> implements ExtrinsicMinPQ<T
     private void swap(int a, int b) {
         PriorityNode<T> node1 = items.get(a);
         PriorityNode<T> node2 = items.get(b);
-        itemMap.put(node1.getItem(), b);
-        itemMap.put(node2.getItem(), a);
         items.set(a, node2);
         items.set(b, node1);
+        itemsMap.put(node1.getItem(), b);
+        itemsMap.put(node2.getItem(), a);
     }
 
     @Override
     public void add(T item, double priority) {
-        if (item == null || contains(item)) {
+        if (contains(item) || item == null) {
             throw new IllegalArgumentException();
         } else {
-            items.add(new PriorityNode<>(item, priority)); // add to the rightmost pos
-            itemMap.put(item, size);
-            swim(size);
+            items.add(new PriorityNode<>(item, priority));
+            itemsMap.put(item, size);
+            swimUp(size);
             size++;
         }
     }
 
     @Override
     public boolean contains(T item) {
-        return itemMap.containsKey(item);
+        return itemsMap.containsKey(item);
     }
 
     @Override
     public T peekMin() {
-        if (size() <= 0) {
+        if (size() > START_INDEX) {
+            return items.get(START_INDEX).getItem();
+        } else {
             throw new NoSuchElementException();
         }
-        return items.get(START_INDEX).getItem();
     }
 
     @Override
     public T removeMin() {
-        if (size() <= START_INDEX) {
+        if (size() > START_INDEX) {
+            T removed = peekMin();
+            swap(START_INDEX, size - 1);
+            itemsMap.remove(removed);
+            size--;
+            swimDown(START_INDEX);
+            return removed;
+        } else {
             throw new NoSuchElementException();
         }
-        T removed = peekMin();
-        swap(0, size - 1);
-        itemMap.remove(removed);
-        size--;
-        sink(0);
-        return removed;
     }
 
     @Override
     public void changePriority(T item, double priority) {
         if (contains(item)) {
-            int index = itemMap.get(item);
+            int index = itemsMap.get(item);
             if (priority < items.get(index).getPriority()) {
                 items.get(index).setPriority(priority);
-                swim(index);
+                swimUp(index);
             } else {
                 items.get(index).setPriority(priority);
-                sink(index);
+                swimDown(index);
             }
         } else {
             throw new NoSuchElementException();
@@ -95,47 +97,43 @@ public class ArrayHeapMinPQ<T extends Comparable<T>> implements ExtrinsicMinPQ<T
     }
 
     private int parentIndex(int childIndex) {
-        return (childIndex + 1) / 2 - 1;
+        return (childIndex - 1) / 2;
     }
 
     private int leftIndex(int parentIndex) {
-        return (parentIndex + 1) * 2 - 1;
+        return parentIndex * 2 + 1;
     }
 
     private int rightIndex(int parentIndex) {
-        return (parentIndex + 1) * 2;
+        return parentIndex * 2 + 2;
     }
 
-    private void swim(int index) {
-        if (index > 0) {
+    private void swimUp(int index) {
+        if (index > START_INDEX) {
             int parent = parentIndex(index);
             if (items.get(index).getPriority() < items.get(parent).getPriority()) {
                 swap(index, parent);
-                swim(parent);
+                swimUp(parent);
             }
         }
     }
 
-    private void sink(int index) {
-       int sinkIndex = findMin(index);
-       if (sinkIndex > index) {
-           swap(index, sinkIndex);
-           sink(sinkIndex);
+    private void swimDown(int index) {
+        int sinkIndex = findSmaller(index);
+        while (items.get(index).getPriority() > items.get(sinkIndex).getPriority()) {
+            swap(index, sinkIndex);
+            index = sinkIndex;
+            sinkIndex = findSmaller(index);
         }
-    // while (items.get(index).getPriority() > items.get(sinkIndex).getPriority()) {
-    //     swap(index, sinkIndex);```
-    //     index = sinkIndex;
-    //     sinkIndex = findMin(index);
-    // }
     }
 
-    private int findMin(int parentIndex) {
+    private int findSmaller(int parentIndex) {
         int left = leftIndex(parentIndex);
         int right = rightIndex(parentIndex);
-        if (left <= size() && items.get(left).getPriority() < items.get(parentIndex).getPriority()) {
+        if (left < size() && items.get(left).getPriority() < items.get(parentIndex).getPriority()) {
             parentIndex = left;
         }
-        if (right <= size() && items.get(right).getPriority() < items.get(parentIndex).getPriority()) {
+        if (right < size() && items.get(right).getPriority() < items.get(parentIndex).getPriority()) {
             parentIndex = right;
         }
         return parentIndex;
