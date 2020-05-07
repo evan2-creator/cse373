@@ -120,14 +120,10 @@ public class ArrayHeapMinPQ<T extends Comparable<T>> implements ExtrinsicMinPQ<T
 
     private void swimDown(int index) {
         int sinkIndex = findSmaller(index);
-        // while (items.get(index).getPriority() > items.get(sinkIndex).getPriority()) {
-        //     swap(index, sinkIndex);
-        //     index = sinkIndex;
-        //     sinkIndex = findSmaller(index);
-        // }
-        if (sinkIndex > index) {
+        while (items.get(index).getPriority() > items.get(sinkIndex).getPriority()) {
             swap(index, sinkIndex);
-            swimDown(sinkIndex);
+            index = sinkIndex;
+            sinkIndex = findSmaller(index);
         }
     }
 
