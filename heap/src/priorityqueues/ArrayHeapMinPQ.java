@@ -59,43 +59,43 @@ public class ArrayHeapMinPQ<T extends Comparable<T>> implements ExtrinsicMinPQ<T
 
     @Override
     public T removeMin() {
-        if (size() == 0) {
-            throw new NoSuchElementException("PQ is empty");
-        } else {
-            T min = items.get(START_INDEX).getItem();
-            itemsMap.remove(min);
+        if (size() != 0) {
+            T removed = peekMin();
+            itemsMap.remove(removed);
             if (size() == 1) {
                 items.remove(START_INDEX);
-                return min;
+                return removed;
             } else {
                 items.set(START_INDEX, items.remove(size() - 1));
                 int i = START_INDEX;
-                int smallChild = START_INDEX;
+                int child = START_INDEX;
                 if (size() == 2) {
-                    smallChild = 1;
+                    child = 1;
                 }
                 if (size() >= 3) {
                     if (items.get(1).getPriority() > items.get(2).getPriority()) {
-                        smallChild = 2;
+                        child = 2;
                     } else {
-                        smallChild = 1;
+                        child = 1;
                     }
                 }
-                while (items.get(i).getPriority() > items.get(smallChild).getPriority()) {
-                    swap(i, smallChild);
-                    i = smallChild;
+                while (items.get(i).getPriority() > items.get(child).getPriority()) {
+                    swap(i, child);
+                    i = child;
                     if (size() >= 2 * i + 3) {
-                        if (items.get(2 * i + 1).getPriority() > items.get(2 * i + 2).getPriority()) {
-                            smallChild = 2 * i + 2;
+                        if (items.get(leftIndex(i)).getPriority() > items.get(rightIndex(i)).getPriority()) {
+                            child = rightIndex(i);
                         } else {
-                            smallChild = 2 * i + 1;
+                            child = leftIndex(i);
                         }
-                    } else if (size() == 2 * i + 2) {
-                        smallChild = 2 * i + 1;
+                    } else if (size() == rightIndex(i)) {
+                        child = leftIndex(i);
                     }
                 }
             }
-            return min;
+            return removed;
+        } else {
+            throw new NoSuchElementException();
         }
     }
 
