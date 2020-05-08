@@ -105,7 +105,8 @@ public class ChainedHashMap<K, V> extends AbstractIterableMap<K, V> {
         }
         int oldSize = chains[hashCode].size();
         chains[hashCode].put(key, value);
-        chainSize += (chains[hashCode].size() - oldSize);
+        //chainSize += (chains[hashCode].size() - oldSize);
+        chainSize++;
 
         if (1.0 * chainSize / chains.length >= loadFactor) {
             chains = resize();
@@ -181,17 +182,40 @@ public class ChainedHashMap<K, V> extends AbstractIterableMap<K, V> {
         }
 
         @Override
+        // public boolean hasNext() {
+        //     for (int i = n; i < chains.length; i++) {
+        //         if (iter != null) {
+        //             if (iter.hasNext()) {
+        //                 return true;
+        //             }
+        //         }
+        //         if (n == chains.length - 1) {
+        //             return false;
+        //         }
+        //         n++;
+        //         if (chains[n] != null) {
+        //             iter = chains[n].iterator();
+        //         } else {
+        //             iter = null;
+        //         }
+        //     }
+        //     return false;
+        // }
+
         public boolean hasNext() {
-            for (int i = n; i < chains.length; i++) {
-                if (iter != null) {
-                    if (iter.hasNext()) {
-                        return true;
-                    }
+            while (n < chains.length) {
+                // if iterator is not null, call hasNext()
+                if (iter != null && iter.hasNext()) {
+                    return true;
                 }
+                // if !hasNext() and n is at the end, return false
                 if (n == chains.length - 1) {
                     return false;
                 }
                 n++;
+                // if chains[n] is not null, assign new iterator
+                // if chains[n] is null, assign iterator to null
+                // and go next round to update it
                 if (chains[n] != null) {
                     iter = chains[n].iterator();
                 } else {
