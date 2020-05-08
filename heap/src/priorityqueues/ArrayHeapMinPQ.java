@@ -68,28 +68,28 @@ public class ArrayHeapMinPQ<T extends Comparable<T>> implements ExtrinsicMinPQ<T
             } else {
                 items.set(START_INDEX, items.remove(size() - 1));
                 int i = START_INDEX;
-                int smallerChild = START_INDEX;
+                int child = START_INDEX;
                 if (size() == 2) {
-                    smallerChild = 1;
+                    child = 1;
                 }
                 if (size() >= 3) {
                     if (items.get(1).getPriority() > items.get(2).getPriority()) {
-                        smallerChild = 2;
+                        child = 2;
                     } else {
-                        smallerChild = 1;
+                        child = 1;
                     }
                 }
-                while (items.get(i).getPriority() > items.get(smallerChild).getPriority()) {
-                    swap(i, smallerChild);
-                    i = smallerChild;
+                while (items.get(i).getPriority() > items.get(child).getPriority()) {
+                    swap(i, child);
+                    i = child;
                     if (size() >= 2 * i + 3) {
                         if (items.get(leftIndex(i)).getPriority() > items.get(rightIndex(i)).getPriority()) {
-                            smallerChild = rightIndex(i);
+                            child = rightIndex(i);
                         } else {
-                            smallerChild = leftIndex(i);
+                            child = leftIndex(i);
                         }
                     } else if (size() == rightIndex(i)) {
-                        smallerChild = leftIndex(i);
+                        child = leftIndex(i);
                     }
                 }
             }
