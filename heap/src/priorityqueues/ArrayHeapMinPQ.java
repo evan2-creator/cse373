@@ -11,13 +11,11 @@ public class ArrayHeapMinPQ<T extends Comparable<T>> implements ExtrinsicMinPQ<T
     static final int START_INDEX = 0;
     List<PriorityNode<T>> items;
 
-    private int size;
     private HashMap<T, Integer> itemsMap;
 
     public ArrayHeapMinPQ() {
         items = new ArrayList<>();
         itemsMap = new HashMap<>();
-        size = 0;
     }
 
     // Here's a method stub that may be useful. Feel free to change or remove it, if you wish.
@@ -40,9 +38,8 @@ public class ArrayHeapMinPQ<T extends Comparable<T>> implements ExtrinsicMinPQ<T
             throw new IllegalArgumentException();
         } else {
             items.add(new PriorityNode<>(item, priority));
-            itemsMap.put(item, size);
-            swimUp(size);
-            size++;
+            itemsMap.put(item, size() - 1);
+            swimUp(size() - 1);
         }
     }
 
@@ -62,12 +59,40 @@ public class ArrayHeapMinPQ<T extends Comparable<T>> implements ExtrinsicMinPQ<T
 
     @Override
     public T removeMin() {
-        if (size() > START_INDEX) {
+        if (size() != 0) {
             T removed = peekMin();
-            swap(START_INDEX, size - 1);
             itemsMap.remove(removed);
-            size--;
-            swimDown(START_INDEX);
+            if (size() == 1) {
+                items.remove(START_INDEX);
+                return removed;
+            } else {
+                items.set(START_INDEX, items.remove(size() - 1));
+                int i = START_INDEX;
+                int smallerChild = START_INDEX;
+                if (size() == 2) {
+                    smallerChild = 1;
+                }
+                if (size() >= 3) {
+                    if (items.get(1).getPriority() > items.get(2).getPriority()) {
+                        smallerChild = 2;
+                    } else {
+                        smallerChild = 1;
+                    }
+                }
+                while (items.get(i).getPriority() > items.get(smallerChild).getPriority()) {
+                    swap(i, smallerChild);
+                    i = smallerChild;
+                    if (size() >= 2 * i + 3) {
+                        if (items.get(leftIndex(i)).getPriority() > items.get(rightIndex(i)).getPriority()) {
+                            smallerChild = rightIndex(i);
+                        } else {
+                            smallerChild = leftIndex(i);
+                        }
+                    } else if (size() == rightIndex(i)) {
+                        smallerChild = leftIndex(i);
+                    }
+                }
+            }
             return removed;
         } else {
             throw new NoSuchElementException();
@@ -88,12 +113,11 @@ public class ArrayHeapMinPQ<T extends Comparable<T>> implements ExtrinsicMinPQ<T
         } else {
             throw new NoSuchElementException();
         }
-
     }
 
     @Override
     public int size() {
-        return size;
+        return items.size();
     }
 
     private int parentIndex(int childIndex) {
@@ -111,7 +135,7 @@ public class ArrayHeapMinPQ<T extends Comparable<T>> implements ExtrinsicMinPQ<T
     private void swimUp(int index) {
         if (index > START_INDEX) {
             int parent = parentIndex(index);
-            if (items.get(index).getPriority() < items.get(parent).getPriority()) {
+            while (items.get(index).getPriority() < items.get(parent).getPriority()) {
                 swap(index, parent);
                 swimUp(parent);
             }
