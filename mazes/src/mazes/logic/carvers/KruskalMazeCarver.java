@@ -6,8 +6,8 @@ import mazes.entities.Room;
 import mazes.entities.Wall;
 import mazes.logic.MazeGraph;
 
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
@@ -42,7 +42,7 @@ public class KruskalMazeCarver extends MazeCarver {
         var mst = this.minimumSpanningTreeFinder.findMinimumSpanningTree(new MazeGraph(edgeSet));
 
         Set<Wall> toRemove = new HashSet<>();
-        List<EdgeWithData<Room, Wall>> removeEdges = (List<EdgeWithData<Room, Wall>>) mst.edges();
+        Collection<EdgeWithData<Room, Wall>> removeEdges = mst.edges();
         for (EdgeWithData<Room, Wall> e : removeEdges) {
             toRemove.add(e.data());
         }
