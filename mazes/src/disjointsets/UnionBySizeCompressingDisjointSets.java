@@ -65,10 +65,12 @@ public class UnionBySizeCompressingDisjointSets<T> implements DisjointSets<T> {
 
         int size1 = Math.abs(pointers.get(id1));
         int size2 = Math.abs(pointers.get(id2));
-        if (size1 >= size2) {
-            pointers.set(id2, id1);
+        if (size1 > size2) {
+            // pointers.set(id1, id2);
+            this.map.replaceAll((item, rep) -> rep == id1 ? id2 : rep);
         } else {
-            pointers.set(id1, id2);
+            // pointers.set(id2, id1);
+            this.map.replaceAll((item, rep) -> rep == id2 ? id1 : rep);
         }
         return true;
     }
