@@ -62,7 +62,6 @@ public class UnionBySizeCompressingDisjointSets<T> implements DisjointSets<T> {
         if (id1 == id2) {
             return false;
         }
-
         int size1 = Math.abs(pointers.get(id1));
         int size2 = Math.abs(pointers.get(id2));
         if (size1 > size2) {
