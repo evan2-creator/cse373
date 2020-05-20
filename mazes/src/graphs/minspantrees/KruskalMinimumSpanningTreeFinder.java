@@ -40,8 +40,24 @@ public class KruskalMinimumSpanningTreeFinder<G extends KruskalGraph<V, E>, V, E
         edges.sort(Comparator.comparingDouble(E::weight));
 
         DisjointSets<V> disjointSets = createDisjointSets();
+        for (V vertex : graph.allVertices()) {
+            disjointSets.makeSet(vertex);
+        }
 
-        // TODO: replace this with your code
-        throw new UnsupportedOperationException("Not implemented yet.");
+        ArrayList<E> mst = new ArrayList<>();
+
+        for (E edge : edges) {
+            if (disjointSets.findSet(edge.from()) != disjointSets.findSet(edge.to())) {
+                mst.add(edge);
+                disjointSets.union(edge.from(), edge.to());
+                if (mst.size() == edges.size()) {
+                    break;
+                }
+            }
+        }
+        if (mst.size() < graph.allVertices().size() - 1) {
+            return new MinimumSpanningTree.Failure<>();
+        }
+        return new MinimumSpanningTree.Success<>(mst);
     }
 }
