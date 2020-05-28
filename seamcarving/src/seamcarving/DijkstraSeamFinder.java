@@ -46,20 +46,14 @@ public class DijkstraSeamFinder implements SeamFinder {
 
         for (int i = 0; i < width - 1; i++) {
             for (int j = 0; j < height; j++) {
-                if (j - 1 > 0) {
-                    if (distToHorizon[i + 1][j - 1] > distToHorizon[i][j] + energies[i + 1][j - 1]) {
-                        distToHorizon[i + 1][j - 1] = distToHorizon[i][j] + energies[i + 1][j - 1];
-                        nodeTo[i + 1][j - 1] = j;
-                    }
-                }
-                if (distToHorizon[i + 1][j] > distToHorizon[i][j] + energies[i + 1][j]) {
-                    distToHorizon[i + 1][j] = distToHorizon[i][j] + energies[i + 1][j];
-                    nodeTo[i + 1][j] = j;
-                }
-                if (j + 1 < height) {
-                    if (distToHorizon[i + 1][j + 1] > distToHorizon[i][j] + energies[i + 1][j + 1]) {
-                        distToHorizon[i + 1][j + 1] = distToHorizon[i][j] + energies[i + 1][j + 1];
-                        nodeTo[i + 1][j + 1] = j;
+                for (int k = -1; k <= 1; k++) {
+                    if (j + k < 0 || j + k > height - 1 || i + 1 > width - 1) {
+                        break;
+                    } else {
+                        if (distToHorizon[i + 1][j + k] > distToHorizon[i][j] + energies[i + 1][j + k]) {
+                            distToHorizon[i + 1][j + k] = distToHorizon[i][j] + energies[i + 1][j + k];
+                            nodeTo[i + 1][j + k] = j;
+                        }
                     }
                 }
             }
@@ -108,20 +102,14 @@ public class DijkstraSeamFinder implements SeamFinder {
 
         for (int i = 0; i < height - 1; i++) {
             for (int j = 0; j < width; j++) {
-                if (j - 1 > 0) {
-                    if (distToVertical[j - 1][i + 1] > distToVertical[j][i] + energies[j - 1][i + 1]) {
-                        distToVertical[j - 1][i + 1] = distToVertical[j][i] + energies[j - 1][i + 1];
-                        nodeTo[j - 1][i + 1] = j;
-                    }
-                }
-                if (distToVertical[j][i + 1] > distToVertical[j][i] + energies[j][i + 1]) {
-                    distToVertical[j][i + 1] = distToVertical[j][i] + energies[j][i + 1];
-                    nodeTo[j][i + 1] = j;
-                }
-                if (j + 1 < width) {
-                    if (distToVertical[j + 1][i + 1] > distToVertical[j][i] + energies[j + 1][i + 1]) {
-                        distToVertical[j + 1][i + 1] = distToVertical[j][i] + energies[j + 1][i + 1];
-                        nodeTo[j + 1][i + 1] = j;
+                for (int k = -1; k <= 1; k++) {
+                    if (j + k < 0 || j + k > width - 1 || i + 1 > height - 1) {
+                        break;
+                    } else {
+                        if (distToVertical[j + k][i + 1] > distToVertical[j][i] + energies[j+k][i+1]) {
+                            distToVertical[j + k][i + 1] = distToVertical[j][i] + energies[j+k][i+1];
+                            nodeTo[j + k][i + 1] = j;
+                        }
                     }
                 }
             }
