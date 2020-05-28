@@ -32,28 +32,34 @@ public class DijkstraSeamFinder implements SeamFinder {
 
         int[] seam = new int[width];
         int[][] nodeTo = new int[width][height];
-        double[][] distToHorizon = new double[width][height];
+        double[][] distTo = new double[width][height];
 
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 if (i == 0) {
-                    distToHorizon[i][j] = energies[i][j];
+                    distTo[i][j] = energies[i][j];
                 } else {
-                    distToHorizon[i][j] = Double.POSITIVE_INFINITY;
+                    distTo[i][j] = Double.POSITIVE_INFINITY;
                 }
             }
         }
 
         for (int i = 0; i < width - 1; i++) {
             for (int j = 0; j < height; j++) {
-                for (int k = -1; k <= 1; k++) {
-                    if (j + k < 0 || j + k > height - 1 || i + 1 > width - 1) {
-                        break;
-                    } else {
-                        if (distToHorizon[i + 1][j + k] > distToHorizon[i][j] + energies[i + 1][j + k]) {
-                            distToHorizon[i + 1][j + k] = distToHorizon[i][j] + energies[i + 1][j + k];
-                            nodeTo[i + 1][j + k] = j;
-                        }
+                if (j - 1 > 0) {
+                    if (distTo[i + 1][j - 1] > distTo[i][j] + energies[i + 1][j - 1]) {
+                        distTo[i + 1][j - 1] = distTo[i][j] + energies[i + 1][j - 1];
+                        nodeTo[i + 1][j - 1] = j;
+                    }
+                }
+                if (distTo[i + 1][j] > distTo[i][j] + energies[i + 1][j]) {
+                    distTo[i + 1][j] = distTo[i][j] + energies[i + 1][j];
+                    nodeTo[i + 1][j] = j;
+                }
+                if (j + 1 < height) {
+                    if (distTo[i + 1][j + 1] > distTo[i][j] + energies[i + 1][j + 1]) {
+                        distTo[i + 1][j + 1] = distTo[i][j] + energies[i + 1][j + 1];
+                        nodeTo[i + 1][j + 1] = j;
                     }
                 }
             }
@@ -62,8 +68,8 @@ public class DijkstraSeamFinder implements SeamFinder {
         int index = 0;
         double min = Double.POSITIVE_INFINITY;
         for (int i = 0; i < height; i++) {
-            if (min > distToHorizon[width - 1][i]) {
-                min = distToHorizon[width - 1][i];
+            if (min > distTo[width - 1][i]) {
+                min = distTo[width - 1][i];
                 index = i;
             }
         }
@@ -88,28 +94,34 @@ public class DijkstraSeamFinder implements SeamFinder {
 
         int[] seam = new int[height];
         int[][] nodeTo = new int[width][height];
-        double[][] distToVertical = new double[width][height];
+        double[][] distTo = new double[width][height];
 
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 if (i == 0) {
-                    distToVertical[j][i] = energies[j][i];
+                    distTo[j][i] = energies[j][i];
                 } else {
-                    distToVertical[j][i] = Double.POSITIVE_INFINITY;
+                    distTo[j][i] = Double.POSITIVE_INFINITY;
                 }
             }
         }
 
         for (int i = 0; i < height - 1; i++) {
             for (int j = 0; j < width; j++) {
-                for (int k = -1; k <= 1; k++) {
-                    if (j + k < 0 || j + k > width - 1 || i + 1 > height - 1) {
-                        break;
-                    } else {
-                        if (distToVertical[j + k][i + 1] > distToVertical[j][i] + energies[j+k][i+1]) {
-                            distToVertical[j + k][i + 1] = distToVertical[j][i] + energies[j+k][i+1];
-                            nodeTo[j + k][i + 1] = j;
-                        }
+                if (j - 1 > 0) {
+                    if (distTo[j - 1][i + 1] > distTo[j][i] + energies[j - 1][i + 1]) {
+                        distTo[j - 1][i + 1] = distTo[j][i] + energies[j - 1][i + 1];
+                        nodeTo[j - 1][i + 1] = j;
+                    }
+                }
+                if (distTo[j][i + 1] > distTo[j][i] + energies[j][i + 1]) {
+                    distTo[j][i + 1] = distTo[j][i] + energies[j][i + 1];
+                    nodeTo[j][i + 1] = j;
+                }
+                if (j + 1 < width) {
+                    if (distTo[j + 1][i + 1] > distTo[j][i] + energies[j + 1][i + 1]) {
+                        distTo[j + 1][i + 1] = distTo[j][i] + energies[j + 1][i + 1];
+                        nodeTo[j + 1][i + 1] = j;
                     }
                 }
             }
@@ -118,8 +130,8 @@ public class DijkstraSeamFinder implements SeamFinder {
         int index = 0;
         double min = Double.POSITIVE_INFINITY;
         for (int i = 0; i < width; i++) {
-            if (min > distToVertical[i][height - 1]) {
-                min = distToVertical[i][height - 1];
+            if (min > distTo[i][height - 1]) {
+                min = distTo[i][height - 1];
                 index = i;
             }
         }
