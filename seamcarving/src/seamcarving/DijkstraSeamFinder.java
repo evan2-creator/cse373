@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DijkstraSeamFinder implements SeamFinder {
-    // TODO: replace all 4 references to "Object" on the line below with whatever vertex type
+    // TO-DO: replace all 4 references to "Object" on the line below with whatever vertex type
     //  you choose for your graph
     private final ShortestPathFinder<Graph<Object, Edge<Object>>, Object, Edge<Object>> pathFinder;
 
